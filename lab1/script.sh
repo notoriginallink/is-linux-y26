@@ -46,10 +46,35 @@ usermod --shell /usr/bin/mc u1
 useradd -p 87654321 u2 2>>/dev/null
 
 # 13
-OUT_DIR="/home/test13"
-mkdir /home/test13
-cp $OUT $OUT_DIR/work3-1.log
-cp $OUT $OUT_DIR/work3-2.log
+TEST13="/home/test13"
+mkdir $TEST13
+cp $OUT $TEST13/work3-1.log
+cp $OUT $TEST13/work3-2.log
 
 # 14
+chown -R u1:u2 $TEST13
+chmod -R 640 $TEST13
+
+# 15
+TEST14="/home/test14"
+mkdir $TEST14
+chown -R u1:u1 $TEST14
+chmod -R 1722 $TEST14
+
+# 16
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
