@@ -14,7 +14,7 @@ rm -f work3.log
 STRING="u1 ALL=(ALL) NOPASSWD: /usr/bin/passwd"
 FILE="/etc/sudoers"
 if grep -qF "$STRING" "$FILE"; then
-	sed -i "\|STRING|d" "$FILE"
+	sed -i "\|$STRING|d" "$FILE"
 fi
 
 
