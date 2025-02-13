@@ -64,8 +64,17 @@ chmod -R 1777 $TEST14
 
 # 16
 cp /bin/nano $TEST14
-chmod 755 $TEST14/nano
+chown u1 $TEST14/nano
+chmod 4777 $TEST14/nano # Т.е. все пользователи запускающие nano будут иметь такие же права как его владелец u1, и смогут изменять файлы в test13
 
+# 17
+TEST15="/home/test15"
+touch $TEST15/secret_file
+chmod 771 $TEST15 # Разрешает всем заходить в каталог, но не разрешает смотреть список файлов (так как нет чтения)
+chmod 774 $TEST15/secret_file # разрешает читать секретный файл
+
+# 18
+echo "u1 ALL=(ALL) NOPASSWD: /usr/bin/passwd" >> /etc/sudoers
 
 
 
