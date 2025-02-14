@@ -17,7 +17,7 @@ echo >> $OUT
 echo "Be careful!" > /etc/skel/readme.txt
 
 # 5
-useradd -m -p $(openssl passwd 12345678) u1 2>>/dev/null
+useradd -m -p $(openssl passwd -5 12345678) u1 2>>/dev/null
 
 # 6
 groupadd g1 2>>/dev/null
@@ -43,7 +43,7 @@ echo >> $OUT
 usermod --shell /usr/bin/mc u1
 
 # 12
-useradd -m -p $(openssl passwd 87654321) u2 2>>/dev/null
+useradd -m -p $(openssl passwd -5 87654321) u2 2>>/dev/null
 
 # 13
 TEST13="/home/test13"
