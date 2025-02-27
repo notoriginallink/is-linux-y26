@@ -231,3 +231,35 @@ Pass 5: Checking group summary information
 
 ---
 
+### 12. Создание нового раздела в 12Мб а также перемещение в этот раздел журнала файловой системы из п.3
+Создадим новый раздел с помощью `fdisk /dev/sdb` аналогично п.1
+```
+# lsblk /dev/sdb
+NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
+sdb      8:16   0   2G  0 disk 
+├─sdb1   8:17   0   1G  0 part 
+└─sdb2   8:18   0  12M  0 part 
+```
+
+Создадим файловую систему на разделе **sdb2** для хранения журнала (Размер блока должен быть такой же как у */dev/sdb1*)
+```
+mkfs.ext4 -O journal_dev -b 4096 /dev/sdb2
+```
+
+Далее изменим местоположение журнала файловой системы */dev/sdb1* на */dev/sdb2*
+``` bash
+tune2fs -O ^has_journal /dev/sdb1		# Удалить существующий журнал
+tune2fs -J device=/dev/sdb2 /dev/sdb1		# Создать журнал в файловой системе /dev/sdb2
+```
+
+Теперь проверим что журнал расположен в */dev/sdb2*
+```
+# blkid /dev/sdb2
+/dev/sdb2: UUID="d7ea4f06-a16c-4bef-b7dd-3270c0c66399" BLOCK_SIZE="4096" LOGUUID="d7ea4f06-a16c-4bef-b7dd-3270c0c66399" TYPE="jbd" PARTUUID="e0339f71-02"
+
+# tune2fs -l /dev/sdb1 | grep "Journal UUID"
+Journal UUID:             d7ea4f06-a16c-4bef-b7dd-3270c0c66399
+```
+Как видим UUID совпадают
+
+---
