@@ -424,3 +424,82 @@ resize2fs /dev/g1/lv1
 
 ---
 
+### 19. Получить информацию о LVM о дисках, volume groupe и volume
+```
+# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sdc1
+  VG Name               g1
+  PV Size               <2,00 GiB / not usable 3,00 MiB
+  Allocatable           yes (but full)
+  PE Size               4,00 MiB
+  Total PE              511
+  Free PE               0
+  Allocated PE          511
+  PV UUID               0Wco6Z-YzI1-6lq2-cB3I-vtvL-L0UQ-Ey3T5G
+   
+  --- Physical volume ---
+  PV Name               /dev/sdd1
+  VG Name               g1
+  PV Size               <2,00 GiB / not usable 3,00 MiB
+  Allocatable           yes (but full)
+  PE Size               4,00 MiB
+  Total PE              511
+  Free PE               0
+  Allocated PE          511
+  PV UUID               7aJ5lF-ZF6T-ExD8-SC8Y-npZa-NYvW-LF3y2H
+   
+  --- Physical volume ---
+  PV Name               /dev/sde1
+  VG Name               g1
+  PV Size               <2,00 GiB / not usable 3,00 MiB
+  Allocatable           yes 
+  PE Size               4,00 MiB
+  Total PE              511
+  Free PE               511
+  Allocated PE          0
+  PV UUID               67flG7-1253-SAgi-siDy-wUW7-6mzD-JDecNf
+   
+# vgdisplay g1
+  --- Volume group ---
+  VG Name               g1
+  System ID             
+  Format                lvm2
+  Metadata Areas        3
+  Metadata Sequence No  7
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                3
+  Act PV                3
+  VG Size               <5,99 GiB
+  PE Size               4,00 MiB
+  Total PE              1533
+  Alloc PE / Size       1022 / 3,99 GiB
+  Free  PE / Size       511 / <2,00 GiB				# Как видим свобоное место есть
+  VG UUID               EfmWQ6-awJp-QCIJ-VU2Y-U5Ys-sgTl-GcpwfB
+ 
+# lvdisplay /dev/g1/lv1
+  --- Logical volume ---
+  LV Path                /dev/g1/lv1
+  LV Name                lv1
+  VG Name                g1
+  LV UUID                LNdxxb-Ryb2-tG6G-8kwm-wuBe-m2Ln-2DQAyA
+  LV Write Access        read/write
+  LV Creation host, time d12, 2025-02-28 00:13:10 +0300
+  LV Status              available
+  # open                 1
+  LV Size                3,99 GiB				# Но расширение про исходит, так как добавлен всего 1 диск
+  Current LE             1022
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     512
+  Block device           254:0
+   
+```
+
+---
