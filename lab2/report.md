@@ -203,3 +203,25 @@ I/O size (minimum/optimal): 512 bytes / 512 bytes
 ```
 
 ---
+
+### 11. Проверить на наличие ошибок созданную файловую систему в "безопасном режиме"
+Для проверки в read-only режиме используем утилиту
+``` bash
+e2fsck -n /dev/sdb1
+```
+
+Вывод команды:
+```
+e2fsck 1.47.0 (5-Feb-2023)
+Warning!  /dev/sdb1 is mounted.
+Warning: skipping journal recovery because doing a read-only filesystem check.
+/dev/sdb1 has been mounted 3 times without being checked, check forced.
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/sdb1: 12/256000 files (0.0% non-contiguous), 20439/262144 blocks
+```
+
+---
