@@ -271,30 +271,45 @@ Journal UUID:             d7ea4f06-a16c-4bef-b7dd-3270c0c66399
 Далее инициализируем разделы для LVM используя `pvcreate /dev/sdc1 /dev/sdd1`
 ```
 # pvdisplay
+"/dev/sdc1" is a new physical volume of "<2,00 GiB"
+--- NEW Physical volume ---
+PV Name               /dev/sdc1
+VG Name               
+PV Size               <2,00 GiB
+Allocatable           NO
+PE Size               0   
+Total PE              0
+Free PE               0
+Allocated PE          0
+PV UUID               0Wco6Z-YzI1-6lq2-cB3I-vtvL-L0UQ-Ey3T5G
 
-  "/dev/sdc1" is a new physical volume of "<2,00 GiB"
-  --- NEW Physical volume ---
-  PV Name               /dev/sdc1
-  VG Name               
-  PV Size               <2,00 GiB
-  Allocatable           NO
-  PE Size               0   
-  Total PE              0
-  Free PE               0
-  Allocated PE          0
-  PV UUID               0Wco6Z-YzI1-6lq2-cB3I-vtvL-L0UQ-Ey3T5G
-   
-  "/dev/sdd1" is a new physical volume of "<2,00 GiB"
-  --- NEW Physical volume ---
-  PV Name               /dev/sdd1
-  VG Name               
-  PV Size               <2,00 GiB
-  Allocatable           NO
-  PE Size               0   
-  Total PE              0
-  Free PE               0
-  Allocated PE          0
-  PV UUID               7aJ5lF-ZF6T-ExD8-SC8Y-npZa-NYvW-LF3y2H
-```   
+"/dev/sdd1" is a new physical volume of "<2,00 GiB"
+--- NEW Physical volume ---
+PV Name               /dev/sdd1
+VG Name               
+PV Size               <2,00 GiB
+Allocatable           NO
+PE Size               0   
+Total PE              0
+Free PE               0
+Allocated PE          0
+PV UUID               7aJ5lF-ZF6T-ExD8-SC8Y-npZa-NYvW-LF3y2H
+
+```
+
+---
+
+### 14. Создать на дисках чередующийся LVM том и файловую систему ext4 на нем
+Сначала  создадим группу томов из дисков
+``` bash
+vgcreate g1 /dev/sdc1 /dev/sdd1
+```
+Далее создаем логический том с чередованием
+``` bash
+lvcreate --extents 100%FREE --stripes 2 --name lv1 g1
+```
+Созданный логический том располагается по пути **/dev/g1/lv1**
+
+Теперь создадим файловую систему с помощью `mkfs.ext4 /dev/g1/lv1`
 
 ---
