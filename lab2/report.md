@@ -178,3 +178,28 @@ chmod +x /mnt/newdisk/hello.sh
 ```
 
 ---
+
+### 10. Увеличить размер раздела и файловой системы до 1 Гб
+Сначала отмонтируем файловую систему с помощью `umount /dev/sdb1`
+
+Теперь используем утилиту `fdisk`, в ней сначала выполним команду `d` чтобы удалить сузествующий раздел, а потом повторим команды из п.1
+
+Дальше увеличим размер файловой системы
+``` bash
+resize2fs /dev/sdb1
+```
+
+Проверим параметры раздела и файловой системы с помощью `fdisk` и `df`
+```
+# fdisk -l /dev/sdb1
+Disk /dev/sdb1: 1 GiB, 1073741824 bytes, 2097152 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+# df --human-readable /dev/sdb1
+Файловая система Размер Использовано  Дост Использовано% Cмонтировано в
+/dev/sdb1          945M          28K  889M            1% /mnt/newdisk
+```
+
+---
