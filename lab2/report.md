@@ -241,18 +241,18 @@ sdb      8:16   0   2G  0 disk
 └─sdb2   8:18   0  12M  0 part 
 ```
 
-Создадим файловую систему на разделе **sdb2** для хранения журнала (Размер блока должен быть такой же как у */dev/sdb1*)
+Создадим файловую систему на разделе **sdb2** для хранения журнала (Размер блока должен быть такой же как у **/dev/sdb1**)
 ```
 mkfs.ext4 -O journal_dev -b 4096 /dev/sdb2
 ```
 
-Далее изменим местоположение журнала файловой системы */dev/sdb1* на */dev/sdb2*
+Далее изменим местоположение журнала файловой системы **/dev/sdb1** на **/dev/sdb2**
 ``` bash
 tune2fs -O ^has_journal /dev/sdb1		# Удалить существующий журнал
 tune2fs -J device=/dev/sdb2 /dev/sdb1		# Создать журнал в файловой системе /dev/sdb2
 ```
 
-Теперь проверим что журнал расположен в */dev/sdb2*
+Теперь проверим что журнал расположен в **/dev/sdb2**
 ```
 # blkid /dev/sdb2
 /dev/sdb2: UUID="d7ea4f06-a16c-4bef-b7dd-3270c0c66399" BLOCK_SIZE="4096" LOGUUID="d7ea4f06-a16c-4bef-b7dd-3270c0c66399" TYPE="jbd" PARTUUID="e0339f71-02"
@@ -261,5 +261,40 @@ tune2fs -J device=/dev/sdb2 /dev/sdb1		# Создать журнал в файл
 Journal UUID:             d7ea4f06-a16c-4bef-b7dd-3270c0c66399
 ```
 Как видим UUID совпадают
+
+---
+
+### 13. Создать на 2-м и 3-м дисках разделы, занимающие весь объем и инициализировать их для LVM
+Создаем разделы аналогично п.1 для дисков **/dev/sdc** и **/dev/sdd**
+- Но в конце используем команду `t` - для определения типа раздела (указываем `8e` - LVM)
+
+Далее инициализируем разделы для LVM используя `pvcreate /dev/sdc1 /dev/sdd1`
+```
+# pvdisplay
+
+  "/dev/sdc1" is a new physical volume of "<2,00 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/sdc1
+  VG Name               
+  PV Size               <2,00 GiB
+  Allocatable           NO
+  PE Size               0   
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               0Wco6Z-YzI1-6lq2-cB3I-vtvL-L0UQ-Ey3T5G
+   
+  "/dev/sdd1" is a new physical volume of "<2,00 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/sdd1
+  VG Name               
+  PV Size               <2,00 GiB
+  Allocatable           NO
+  PE Size               0   
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               7aJ5lF-ZF6T-ExD8-SC8Y-npZa-NYvW-LF3y2H
+```   
 
 ---
