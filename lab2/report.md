@@ -503,3 +503,26 @@ resize2fs /dev/g1/lv1
 ```
 
 ---
+
+### 20. Установка nfs-kernel-server
+``` bash
+apt-get install nfs-kernel-server
+systemctl enable nfs-server
+systemctl start nfs-server
+```
+
+---
+
+### 21. Сделать так, чтобы доступ к каталогу можно было получить через NFS при этом разрешить доступ к каталогу только с IP-адресов виртуальных машин и разрешить запись
+Для настройки нужно редактировать файл */etc/exports*, добавив в него строку
+```
+/mnt/vol01	10.0.2.0/24(rw)
+```
+После этого нужно обновить список экспортируемых каталогов командой `exportfs -r` и перезапустить службу NFS `systemctl restart nfs-server`
+
+Далее можно проверить список всех экспортируемых каталогов командой `exportfs -v`
+```
+/mnt/vol01    	10.0.2.0/24(sync,wdelay,hide,no_subtree_check,sec=sys,rw,secure,root_squash,no_all_squash)
+```
+
+---
