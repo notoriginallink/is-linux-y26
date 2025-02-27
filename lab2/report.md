@@ -526,3 +526,22 @@ systemctl start nfs-server
 ```
 
 ---
+
+### 22. На хосте clien смонтировать сетевой ресурс в каталог /var/remotenfs
+На хосте client надо установить nfs-kernel-server аналогично п.20
+
+Далее проверим список доступных для монтирования каталогов `showmount -e 10.0.2.15`
+```
+Export list for 10.0.2.15:
+/mnt/vol01 10.0.2.0/24
+```
+
+Смонтируем каталог
+``` bash
+mkdir /var/remotenfs
+mount 10.0.2.15:/mnt/vol01 /var/remotenfs
+```
+
+---
+
+
