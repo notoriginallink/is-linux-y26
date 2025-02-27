@@ -61,4 +61,24 @@ blkid /dev/sdb1
 
 ---
 
+### 3. Создать на разделе sdb1 файловую систему *ext4* с размером блока 4096 байт
+``` bash
+mkfs.ext4 -b 4096 /dev/sdb1
+```
+
+Теперь вывод команды `blkid /dev/sdb1` выглядит так
+```
+/dev/sdb1: UUID="d9f4bafa-9eda-4eca-a119-661761123787" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="e0339f71-01"
+```
+
+И можно сохранить UUID в файл (пункт 2)
+``` bash
+blkid --match-tag UUID --output value /dev/sdb1 > /root/sdb1_uuid
+```
+
+---
+
+
+
+
 
