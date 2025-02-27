@@ -332,3 +332,74 @@ mount /dev/g1/lv1 /mnt/vol01
 ```
 
 ---
+
+### 16. Получить информацию LVM о дисках, volume group и volume
+```
+# pvdispay
+  --- Physical volume ---
+  PV Name               /dev/sdc1
+  VG Name               g1
+  PV Size               <2,00 GiB / not usable 3,00 MiB
+  Allocatable           yes (but full)
+  PE Size               4,00 MiB
+  Total PE              511
+  Free PE               0
+  Allocated PE          511
+  PV UUID               0Wco6Z-YzI1-6lq2-cB3I-vtvL-L0UQ-Ey3T5G
+   
+  --- Physical volume ---
+  PV Name               /dev/sdd1
+  VG Name               g1
+  PV Size               <2,00 GiB / not usable 3,00 MiB
+  Allocatable           yes (but full)
+  PE Size               4,00 MiB
+  Total PE              511
+  Free PE               0
+  Allocated PE          511
+  PV UUID               7aJ5lF-ZF6T-ExD8-SC8Y-npZa-NYvW-LF3y2H
+   
+
+# vgdisplay g1
+  --- Volume group ---
+  VG Name               g1
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               3,99 GiB
+  PE Size               4,00 MiB
+  Total PE              1022
+  Alloc PE / Size       1022 / 3,99 GiB
+  Free  PE / Size       0 / 0   
+  VG UUID               EfmWQ6-awJp-QCIJ-VU2Y-U5Ys-sgTl-GcpwfB
+   
+
+# lvdisplay /dev/g1/lv1
+  --- Logical volume ---
+  LV Path                /dev/g1/lv1
+  LV Name                lv1
+  VG Name                g1
+  LV UUID                m9fYzf-r2J8-ZLKD-aCpV-8HdI-UWxf-oWpsiJ
+  LV Write Access        read/write
+  LV Creation host, time d12, 2025-02-27 23:17:55 +0300
+  LV Status              available
+  # open                 1
+  LV Size                3,99 GiB
+  Current LE             1022
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     512
+  Block device           254:0
+   
+```
+
+---
