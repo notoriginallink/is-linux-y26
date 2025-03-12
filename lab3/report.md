@@ -287,4 +287,94 @@ Conf manpages-dev (6.03-2 Debian:12.9/stable [all])
 
 ---
 
+### 5. Найти пакет, в описании которого присутствует *"clone with a bastard algorithm"*
+Для поиска пакетов используется команда `apt search`, она ищет по именам и описаниям и выводит найденные совпадения
+``` bash
+apt search "clone with a bastard algorithm"
+```
 
+Вывод команды
+```
+Сортировка…
+Полнотекстовый поиск…
+bastet/stable 0.43-7+b1 amd64
+  ncurses Tetris clone with a bastard algorithm
+```
+Найденный пакет - `bastet`
+
+---
+
+### 6. Скачать исходный код найденного в п.5 пакета
+Создадим директорию *bastet_src* в домашнем каталоге и скачаем исходный код с помощью **git**
+``` bash
+mkdir ~/bastet_src
+cd ~/bastet_src
+apt-get source bastet
+```
+
+---
+
+### 7. Установить пакет из исходных кодов
+Для работы bastet дополнительно потребовалось установить библиотеки **Boost** (`libboost-all-dev`) и **ncurses** (`libncurses5-dev` и `lincursesw5-dev`)
+``` bash
+cd bastet-0.43	# каталог, содержащий Makefile
+make
+```
+После этого в каталоге появился исполняемый файл `bastet`
+
+---
+
+### 8. Изменение Makefile пакета
+Для изменения каталога установки нужно изменить (добавить) переменные
+```
+PREFIX=/usr/local
+BINDIR=$(PREFIX)/bin
+```
+
+Далее нужно изменить (добавить) шаг **install**
+``` makefile
+install: 
+	cp bastet $(BINDIR)
+	chmod 755 $(BINDIR)/bastet
+```
+Теперь заново установим пакет
+``` bash
+make clean
+make
+make install
+```
+
+Итоговый Makefile выглядит так
+``` makefile
+SOURCES=Ui.cpp main.cpp Block.cpp Well.cpp BlockPosition.cpp Config.cpp BlockChooser.cpp BastetBlockChooser.cpp
+PROGNAME=bastet
+LDFLAGS+=-lncurses
+#CXXFLAGS+=-ggdb -Wall
+CXXFLAGS+=-DNDEBUG -Wall
+#CXXFLAGS+=-pg
+#LDFLAGS+=-pg
+PREFIX=/usr/local
+BINDIR=$(PREFIX)/bin
+
+all: $(PROGNAME)
+
+depend: *.hpp $(SOURCES)
+	$(CXX) -MM $(SOURCES) > depend
+
+include depend
+
+$(PROGNAME): $(SOURCES:.cpp=.o)
+	$(CXX) -ggdb -o $(PROGNAME) $(SOURCES:.cpp=.o) $(LDFLAGS) -lboost_program_options
+
+clean:
+	rm -f $(SOURCES:.cpp=.o) $(PROGNAME)
+
+mrproper: clean
+	rm -f *~
+
+install:
+	cp $(PROGNAME) $(BINDIR)
+	chmod 755 $(BINDIR)/$(PROGNAME)
+```
+
+---
