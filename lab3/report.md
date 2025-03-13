@@ -409,3 +409,15 @@ apt-cache rdepends libgpm2 >> task12.log
 ```
 
 ---
+
+### 13. Скачать в каталог localrepo 5 разных версий утилиты htop
+``` bash
+mkdir ~/localrepo
+wget http://snapshot.debian.org/archive/debian/20240101T000000Z/pool/main/h/htop/htop_3.4.0-2_amd64.deb
+wget http://snapshot.debian.org/archive/debian/20250310T101857Z/pool/main/h/htop/htop_3.4.0-1_amd64.deb
+wget http://snapshot.debian.org/archive/debian/20250209T210016Z/pool/main/h/htop/htop_3.3.0-5_amd64.deb
+wget http://snapshot.debian.org/archive/debian/20230217T025930Z/pool/main/h/htop/htop_3.2.2-2_amd64.deb
+wget http://snapshot.debian.org/archive/debian/20210502T143907Z/pool/main/h/htop/htop_3.0.5-7_amd64.deb
+```
+
+---
