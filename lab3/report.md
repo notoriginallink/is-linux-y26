@@ -421,3 +421,23 @@ wget http://snapshot.debian.org/archive/debian/20210502T143907Z/pool/main/h/htop
 ```
 
 ---
+
+### 14. Создать локальный репозиторий в каталоге localrepo
+``` bash
+dpkg-scanpackages --multiversion ~/localrepo > Packages
+```
+Далее создадим файл `Release` с описанием репозитория
+```
+Origin: is-linux-y26							# Источник репозитория (кто его создал) - необязательное
+Label: danya								# Дополнительное название для идентификации - необязательное
+Suite: stable								# Статус репозитория (stable, testing, unstable или своё) - необязательное
+Version: 1.0								# Версия - необязательное
+Codename: myrepo							# Уникальный код репозитория - необязательное
+Architectures: amd64							# Поддерживаемые архитектуры
+Components: main							# Категория пакетов (main, contrib, non-free)
+Description: local APT repository for is-linux-y26 labworks		# Описание - необязательное
+```
+
+---
+
+

@@ -1,0 +1,115 @@
+Package: htop
+Version: 3.0.5-7
+Architecture: amd64
+Maintainer: Daniel Lange <DLange@debian.org>
+Installed-Size: 320
+Depends: libc6 (>= 2.29), libncursesw6 (>= 6), libnl-3-200 (>= 3.2.7), libnl-genl-3-200 (>= 3.2.7), libtinfo6 (>= 6)
+Suggests: lm-sensors, lsof, strace
+Filename: ./htop_3.0.5-7_amd64.deb
+Size: 126596
+MD5sum: b2c42514caddf5896284e5598bbad8bc
+SHA1: 82a5cb57e1e24d20d7e1ddf6608d59d8eb7f3e17
+SHA256: db72557109578d3cfc4e87996930bdb4008d3109b7d1c2773ca79c1f9c3141fc
+Section: utils
+Priority: optional
+Homepage: https://htop.dev/
+Description: interactive processes viewer
+ Htop is an ncursed-based process viewer similar to top, but it
+ allows one to scroll the list vertically and horizontally to see
+ all processes and their full command lines.
+ .
+ Tasks related to processes (killing, renicing) can be done without
+ entering their PIDs.
+
+Package: htop
+Version: 3.2.2-2
+Architecture: amd64
+Maintainer: Daniel Lange <DLange@debian.org>
+Installed-Size: 378
+Depends: libc6 (>= 2.34), libncursesw6 (>= 6), libnl-3-200 (>= 3.2.7), libnl-genl-3-200 (>= 3.2.7), libtinfo6 (>= 6)
+Suggests: lm-sensors, lsof, strace
+Filename: ./htop_3.2.2-2_amd64.deb
+Size: 152412
+MD5sum: 8c0af9bce7a18ce14ead458dbc97185a
+SHA1: ca3e4bb7208ea633f4a863d9337e0242f82a6e1c
+SHA256: 03f3b6ed16e96621add9577c92349d7000d13b2ae341faa28a3dfe7f7a0ff7d2
+Section: utils
+Priority: optional
+Homepage: https://htop.dev/
+Description: interactive processes viewer
+ Htop is an ncursed-based process viewer similar to top, but it
+ allows one to scroll the list vertically and horizontally to see
+ all processes and their full command lines.
+ .
+ Tasks related to processes (killing, renicing) can be done without
+ entering their PIDs.
+
+Package: htop
+Version: 3.3.0-5
+Architecture: amd64
+Maintainer: Daniel Lange <DLange@debian.org>
+Installed-Size: 410
+Depends: libc6 (>= 2.38), libncursesw6 (>= 6), libnl-3-200 (>= 3.2.7), libnl-genl-3-200 (>= 3.2.7), libtinfo6 (>= 6)
+Suggests: lm-sensors, lsof, strace
+Filename: ./htop_3.3.0-5_amd64.deb
+Size: 163860
+MD5sum: aff59ee7155998b54fb531a905d8f32b
+SHA1: bec7fa4347e4781b570333d3cf65a8ad4e8f3cae
+SHA256: 6d4286da30416b4f81275b285ec2f740eef277ad8edc47a5ae3de9b39b589cf0
+Section: utils
+Priority: optional
+Homepage: https://htop.dev/
+Description: interactive processes viewer
+ Htop is an ncursed-based process viewer similar to top, but it
+ allows one to scroll the list vertically and horizontally to see
+ all processes and their full command lines.
+ .
+ Tasks related to processes (killing, renicing) can be done without
+ entering their PIDs.
+
+Package: htop
+Version: 3.4.0-1
+Architecture: amd64
+Maintainer: Daniel Lange <DLange@debian.org>
+Installed-Size: 420
+Depends: libc6 (>= 2.38), libncursesw6 (>= 6), libtinfo6 (>= 6)
+Suggests: lm-sensors, lsof, strace
+Filename: ./htop_3.4.0-1_amd64.deb
+Size: 168008
+MD5sum: 961ddc195263a6764944b2515ac6232f
+SHA1: 85c1a375a4299bdb7d09dbfdabca3c84cddae4f2
+SHA256: daec42cdfe8c4a01ce426b16c677581eb37520199b00513579cfecfee0e993a2
+Section: utils
+Priority: optional
+Homepage: https://htop.dev/
+Description: interactive processes viewer
+ Htop is an ncursed-based process viewer similar to top, but it
+ allows one to scroll the list vertically and horizontally to see
+ all processes and their full command lines.
+ .
+ Tasks related to processes (killing, renicing) can be done without
+ entering their PIDs.
+
+Package: htop
+Version: 3.4.0-2
+Architecture: amd64
+Maintainer: Daniel Lange <DLange@debian.org>
+Installed-Size: 420
+Depends: libc6 (>= 2.38), libncursesw6 (>= 6), libtinfo6 (>= 6)
+Suggests: lm-sensors, lsof, strace
+Filename: ./htop_3.4.0-2_amd64.deb
+Size: 167900
+MD5sum: 67cccafe9900667cde8425242e5d77a0
+SHA1: 62f71051a30a56e1c333aecac8003414278c9185
+SHA256: fab5b4e1d76623094a77800a405616f838f8ec68d453ccd7611345f551da8c68
+Section: utils
+Priority: optional
+Homepage: https://htop.dev/
+Description: interactive processes viewer
+ Htop is an ncursed-based process viewer similar to top, but it
+ allows one to scroll the list vertically and horizontally to see
+ all processes and their full command lines.
+ .
+ Tasks related to processes (killing, renicing) can be done without
+ entering their PIDs.
+
