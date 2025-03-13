@@ -438,6 +438,85 @@ Components: main							# Категория пакетов (main, contrib, non-f
 Description: local APT repository for is-linux-y26 labworks		# Описание - необязательное
 ```
 
+И добавим информацию о созданном репозитории в систему, создадим файл `localrepo.list` в каталоге `/etc/apt/sources.list.d/`
+```
+deb [trusted=yes] file:/root/localrepo ./
+```
+
 ---
 
+### 15. Обновить кэш apt
+``` bash
+apt update
+```
 
+---
+
+### 16. Вывести список и краткую информацию о подключенных репозиториях
+``` bash
+apt-cache policy
+```
+```
+Списки пакетов:
+ 100 /var/lib/dpkg/status
+     release a=now
+ 500 file:/root/localrepo ./ Packages
+     release v=1.0,o=is-linux-y26,a=stable,n=myrepo,l=danya,c=
+ 500 http://deb.debian.org/debian bookworm-updates/non-free-firmware amd64 Packages
+     release v=12-updates,o=Debian,a=stable-updates,n=bookworm-updates,l=Debian,c=non-free-firmware,b=amd64
+     origin deb.debian.org
+ 500 http://deb.debian.org/debian bookworm-updates/main amd64 Packages
+     release v=12-updates,o=Debian,a=stable-updates,n=bookworm-updates,l=Debian,c=main,b=amd64
+     origin deb.debian.org
+ 500 http://security.debian.org/debian-security bookworm-security/non-free-firmware amd64 Packages
+     release v=12,o=Debian,a=stable-security,n=bookworm-security,l=Debian-Security,c=non-free-firmware,b=amd64
+     origin security.debian.org
+ 500 http://security.debian.org/debian-security bookworm-security/main amd64 Packages
+     release v=12,o=Debian,a=stable-security,n=bookworm-security,l=Debian-Security,c=main,b=amd64
+     origin security.debian.org
+ 500 http://deb.debian.org/debian bookworm/non-free-firmware amd64 Packages
+     release v=12.9,o=Debian,a=stable,n=bookworm,l=Debian,c=non-free-firmware,b=amd64
+     origin deb.debian.org
+ 500 http://deb.debian.org/debian bookworm/main amd64 Packages
+     release v=12.9,o=Debian,a=stable,n=bookworm,l=Debian,c=main,b=amd64
+     origin deb.debian.org
+```
+
+Числа 100, 500 - приоритет, больше == выше
+
+---
+
+### 17. Вывести в файл список всех версий htop
+``` bash
+apt-cache madison htop >> task16.log
+```
+
+---
+
+### 18. Установить предпоследнюю версию пакета htop
+Из вывода команды п.17 узнаем, что последняя версия - `3.4.0-1`
+``` bash
+apt install htop=3.4.0-1
+```
+
+Но, к сожалению из-за устаревшей версии `libc6` пришлось установить пакет `htop` версии `3.2.2-2` 
+
+---
+
+### 19. Скачать и изменить пакет nano
+Для начала скачаем пакет nano и разархивируем его в отедельную директорию
+``` bash
+apt-get download nano
+mkdir nano_src
+dpkg-deb --raw-extract nano_*.deb nano_src
+```
+
+Теперь внутри каталога `/nano_src/bin` находим бинарный файл `nano`, переименуем его (или создадим симлинк с именем `newnano` в этом же каталоге)
+
+Далее нужно собрать архив обратно и установить пакет
+``` bash
+# ./nano_dir
+dpkg-dev --build nano_src newnano.deb
+dpkg --install newnano.deb
+```
+Можно проверить что из любого каталога системы редактор запускается с помощью команды **newnano**
