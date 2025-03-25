@@ -284,3 +284,62 @@ WantedBy=multi-user.target	# Этап загрузки системы, когд�
 ```
 
 ---
+
+## Часть 4. Работа с системным журналом
+### 1. Вывести системный журнал
+Журнал выводится с помощью `journalctl`, чтобы проверить сервис, можно отфильтровать по юниту(`-u mymsg`), либы вывести самые последние записи(`-f`)
+```
+мар 26 00:14:23 d12 systemd[1]: Reloading.
+мар 26 00:14:30 d12 systemd[1]: Starting mymsg.service - is-linux-y26...
+мар 26 00:14:30 d12 root[7739]: mysmg service started
+мар 26 00:14:30 d12 systemd[1]: mymsg.service: Deactivated successfully.
+мар 26 00:14:30 d12 systemd[1]: Finished mymsg.service - is-linux-y26.
+мар 26 00:17:01 d12 CRON[7756]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+мар 26 00:17:01 d12 CRON[7757]: (root) CMD (cd / && run-parts --report /etc/cron.hourly)
+мар 26 00:17:01 d12 CRON[7756]: pam_unix(cron:session): session closed for user root
+```
+
+---
+
+### 2. Сообщения в журнале только о сервисе mymsg
+Команда `journalctl -u mymsg`
+```
+мар 26 00:14:30 d12 systemd[1]: Starting mymsg.service - is-linux-y26...
+мар 26 00:14:30 d12 root[7739]: mysmg service started
+мар 26 00:14:30 d12 systemd[1]: mymsg.service: Deactivated successfully.
+мар 26 00:14:30 d12 systemd[1]: Finished mymsg.service - is-linux-y26.
+```
+
+---
+
+### 3. Вывести все сообщение об ошибках из журнала
+Ключ `-p` позволяет задать приоритет, может быть (`emerg`, `alert`, `crit`, `err`, `warning`, `notice`, `info`, `debug`)
+
+Команда `journalctl -p err`
+```
+сен 03 17:43:10 d12 systemd[1]: Invalid DMI field header.
+сен 03 17:43:13 d12 kernel: [drm:vmw_host_printf [vmwgfx]] *ERROR* Failed to send host log message.
+-- Boot 8282f9fe111942c6bee9e0eac3409bfb --
+фев 13 21:09:02 d12 systemd[1]: Invalid DMI field header.
+фев 13 21:09:03 d12 kernel: [drm:vmw_host_printf [vmwgfx]] *ERROR* Failed to send host log message.
+-- Boot 68b4bbf5264d4b368cadb6e94ca06585 --
+фев 14 14:09:29 d12 systemd[1]: Invalid DMI field header.
+фев 14 14:09:32 d12 kernel: [drm:vmw_host_printf [vmwgfx]] *ERROR* Failed to send host log message.
+-- Boot 203b33e13488421b92233618874a9cba --
+мар 12 22:19:25 d12 systemd[1]: Invalid DMI field header.
+мар 12 22:19:27 d12 kernel: [drm:vmw_host_printf [vmwgfx]] *ERROR* Failed to send host log message.
+```
+
+---
+
+### 4. Определить размер журнала
+Ключ `--disk-usage `
+```
+Archived and active journals take up 36.2M in the file system.
+```
+То есть с момента самого первого запуска, размер журнала составляет 36МБ.
+
+Журнал можно очистить с помощью `--vacuum-size=[SIZE]Mb` (будут удаляться старые записи, пока размер не станет меньше xxx мегабайт) 
+или задать автоматическую очистку с помощью `--vacuum-time=[PERIOD]weeks`
+
+---
