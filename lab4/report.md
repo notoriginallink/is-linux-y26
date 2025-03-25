@@ -14,6 +14,8 @@ graphical.target reached after 3.094s in userspace.
 - **3.222s (userspace)** - время, потраченное на запуск `systemd` и остальных пользовательских демонов (сервисов, служб)
 - **graphical.target reached after 3.094s in userspace** - время, которое загружалась графическая оболочка после загрузки *userspace*
 
+---
+
 #### 2. Список всех сервисов в порядке уменьшения времени, потраченного на загрузку
 Команда `systemd-analyze blame`
 
@@ -73,6 +75,8 @@ graphical.target reached after 3.094s in userspace.
    7ms user-runtime-dir@0.service
 ```
 
+---
+
 #### 3. Зависимости сервиса `sshd`
 Команда `systemctl list-dependencies sshd --before`
 
@@ -88,7 +92,7 @@ sshd.service
 ○ └─shutdown.target
 ```
 
+---
+
 #### 4. Граф загрузки системы в формате SVG
 Команда `systemd-analyze plot > startup_plot.svg`
-
----
