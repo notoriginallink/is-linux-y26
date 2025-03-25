@@ -2,7 +2,7 @@
 
 ## Часть 1. Получение информации о времени загрузки
 
-#### 1. Время, потраченное на загрузку системы
+### 1. Время, потраченное на загрузку системы
 Команда `systemd-analyze`
 
 Вывод
@@ -16,7 +16,7 @@ graphical.target reached after 3.094s in userspace.
 
 ---
 
-#### 2. Список всех сервисов в порядке уменьшения времени, потраченного на загрузку
+### 2. Список всех сервисов в порядке уменьшения времени, потраченного на загрузку
 Команда `systemd-analyze blame`
 
 Вывод
@@ -77,7 +77,7 @@ graphical.target reached after 3.094s in userspace.
 
 ---
 
-#### 3. Зависимости сервиса `sshd`
+### 3. Зависимости сервиса `sshd`
 Команда `systemctl list-dependencies sshd --before`
 
 Вывод
@@ -94,12 +94,12 @@ sshd.service
 
 ---
 
-#### 4. Граф загрузки системы в формате SVG
+### 4. Граф загрузки системы в формате SVG
 Команда `systemd-analyze plot > startup_plot.svg`
 
 ## Часть 2. Управление юнитами
 
-#### 1. Список всех запущенных юнит сервисов
+### 1. Список всех запущенных юнит сервисов
 Команда `systemctl list-units --type=service --state=running` - выводит все юниты, которые сейчас в памяти (напрямую или через зависимости)
 
 Вывод
@@ -127,7 +127,7 @@ SUB    = The low-level unit activation state, values depend on unit type.
 
 ---
 
-#### 2. Перечень юнитов сервисов с автозагрузкой
+### 2. Перечень юнитов сервисов с автозагрузкой
 Команда `systemctl list-unit-files --type=service | grep "enabled"` - выводит все юниты в системе (в том числе и неактивные)
 
 Вывод
@@ -170,7 +170,7 @@ x11-common.service                     masked          enabled
 
 ---
 
-#### 3. Юниты, от которых зависит sshd
+### 3. Юниты, от которых зависит sshd
 Команда `systemctl list-dependencies sshd` - информация о всех необходимых юнитах, загруженных в память
 
 Вывод
@@ -223,17 +223,64 @@ sshd.service
 
 ---
 
-#### 4. Определить, запущен ли сервис *cron*
+### 4. Определить, запущен ли сервис *cron*
 Команда `systemctl is-active cron`, Результат: `active`
 
 ---
 
-#### 5. Вывести все параметры юнита *cron* (даже те, которые были назначены автоматически)
+### 5. Вывести все параметры юнита *cron* (даже те, которые были назначены автоматически)
 Команда `systemctl show cron`
 
 ---
 
-#### 6. Запретить автозагрузку *cron*, оставив возможность загружаться по зависимостям
+### 6. Запретить автозагрузку *cron*, оставив возможность загружаться по зависимостям
 Команда `systemctl disable cron`
+
+---
+
+## Часть 3. Создание сервиса
+### 1. Создать сервис *mymsg*
+Для создания сервиса, нужно прописать его конфигурацию в файле `/etc/systemd/system/mymsg.service`
+
+Содержимое файла `mymsg.service`
+```
+[Unit]
+Description=is-linux-y26
+After=network.target		# Запуск только после network.target
+Requires=network.target		# Требует обязательно активного network.target
+
+[Service]
+Type=simple			# Выполняет команду и завершается, также можно simple (разница в том, что oneshot: activating->inactive)
+ExecStart=/bin/bash -c "logger 'mysmg service started'"
+
+[Install]
+WantedBy=multi-user.target	# Этап загрузки системы, когда становится доступна многопользовательность
+```
+Проверим, есть ли ошибки с помощью команду `systemd-analyze verify  /etc/systemd/system/mymsg.service`, если нет ошибок, ничего не будет выведено
+
+---
+
+### 2. Настройка автозапуска сервиса *mymsg*
+Автозапуск активируется с помощью `systemctl enable mymsg`
+
+---
+
+### 3. Запуск сервиса
+Команда `systemctl start mymsg`
+
+Проверим статус с помощью `systemctl status mymsg`
+```
+○ mymsg.service - is-linux-y26
+     Loaded: loaded (/etc/systemd/system/mymsg.service; enabled; preset: enabled)
+     Active: inactive (dead) since Wed 2025-03-26 00:14:30 MSK; 10s ago
+    Process: 7739 ExecStart=/bin/bash -c logger 'mysmg service started' (code=exited, status=0/SUCCESS)
+   Main PID: 7739 (code=exited, status=0/SUCCESS)
+        CPU: 5ms
+
+мар 26 00:14:30 d12 systemd[1]: Starting mymsg.service - is-linux-y26...
+мар 26 00:14:30 d12 root[7739]: mysmg service started
+мар 26 00:14:30 d12 systemd[1]: mymsg.service: Deactivated successfully.
+мар 26 00:14:30 d12 systemd[1]: Finished mymsg.service - is-linux-y26.
+```
 
 ---
