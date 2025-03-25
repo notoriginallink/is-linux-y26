@@ -96,3 +96,144 @@ sshd.service
 
 #### 4. Граф загрузки системы в формате SVG
 Команда `systemd-analyze plot > startup_plot.svg`
+
+## Часть 2. Управление юнитами
+
+#### 1. Список всех запущенных юнит сервисов
+Команда `systemctl list-units --type=service --state=running` - выводит все юниты, которые сейчас в памяти (напрямую или через зависимости)
+
+Вывод
+``` 
+  UNIT                      LOAD   ACTIVE SUB     DESCRIPTION
+  cron.service              loaded active running Regular background program processing daemon
+  dbus.service              loaded active running D-Bus System Message Bus
+  getty@tty1.service        loaded active running Getty on tty1
+  getty@tty2.service        loaded active running Getty on tty2
+  getty@tty3.service        loaded active running Getty on tty3
+  getty@tty6.service        loaded active running Getty on tty6
+  ssh.service               loaded active running OpenBSD Secure Shell server
+  systemd-journald.service  loaded active running Journal Service
+  systemd-logind.service    loaded active running User Login Management
+  systemd-timesyncd.service loaded active running Network Time Synchronization
+  systemd-udevd.service     loaded active running Rule-based Manager for Device Events and Files
+  user@0.service            loaded active running User Manager for UID 0
+  wpa_supplicant.service    loaded active running WPA supplicant
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+13 loaded units listed.
+```
+
+---
+
+#### 2. Перечень юнитов сервисов с автозагрузкой
+Команда `systemctl list-unit-files --type=service | grep "enabled"` - выводит все юниты в системе (в том числе и неактивные)
+
+Вывод
+```
+UNIT FILE				STATE		PRESET
+anacron.service                        enabled         enabled
+apparmor.service                       enabled         enabled
+bluetooth.service                      enabled         enabled
+console-setup.service                  enabled         enabled
+cron.service                           enabled         enabled
+cryptdisks-early.service               masked          enabled
+cryptdisks.service                     masked          enabled
+e2scrub_reap.service                   enabled         enabled
+getty@.service                         enabled         enabled
+hwclock.service                        masked          enabled
+ifupdown-wait-online.service           disabled        enabled
+keyboard-setup.service                 enabled         enabled
+networking.service                     enabled         enabled
+nftables.service                       disabled        enabled
+powertop.service                       disabled        enabled
+rc.service                             masked          enabled
+rcS.service                            masked          enabled
+serial-getty@.service                  disabled        enabled
+ssh.service                            enabled         enabled
+sudo.service                           masked          enabled
+systemd-fsck-root.service              enabled-runtime enabled
+systemd-network-generator.service      disabled        enabled
+systemd-networkd-wait-online@.service  disabled        enabled
+systemd-networkd.service               disabled        enabled
+systemd-pstore.service                 enabled         enabled
+systemd-remount-fs.service             enabled-runtime enabled
+systemd-sysext.service                 disabled        enabled
+systemd-timesyncd.service              enabled         enabled
+wpa_supplicant-nl80211@.service        disabled        enabled
+wpa_supplicant-wired@.service          disabled        enabled
+wpa_supplicant.service                 enabled         enabled
+wpa_supplicant@.service                disabled        enabled
+x11-common.service                     masked          enabled
+```
+
+---
+
+#### 3. Юниты, от которых зависит sshd
+Команда `systemctl list-dependencies sshd` - информация о всех необходимых юнитах, загруженных в память
+
+Вывод
+```
+sshd.service
+● ├─-.mount
+● ├─system.slice
+● └─sysinit.target
+●   ├─apparmor.service
+●   ├─dev-hugepages.mount
+●   ├─dev-mqueue.mount
+●   ├─keyboard-setup.service
+●   ├─kmod-static-nodes.service
+●   ├─proc-sys-fs-binfmt_misc.automount
+●   ├─sys-fs-fuse-connections.mount
+●   ├─sys-kernel-config.mount
+●   ├─sys-kernel-debug.mount
+●   ├─sys-kernel-tracing.mount
+●   ├─systemd-ask-password-console.path
+●   ├─systemd-binfmt.service
+○   ├─systemd-firstboot.service
+●   ├─systemd-journal-flush.service
+●   ├─systemd-journald.service
+○   ├─systemd-machine-id-commit.service
+●   ├─systemd-modules-load.service
+○   ├─systemd-pcrphase-sysinit.service
+○   ├─systemd-pcrphase.service
+○   ├─systemd-pstore.service
+●   ├─systemd-random-seed.service
+○   ├─systemd-repart.service
+●   ├─systemd-sysctl.service
+●   ├─systemd-sysusers.service
+●   ├─systemd-timesyncd.service
+●   ├─systemd-tmpfiles-setup-dev.service
+●   ├─systemd-tmpfiles-setup.service
+●   ├─systemd-udev-trigger.service
+●   ├─systemd-udevd.service
+●   ├─systemd-update-utmp.service
+●   ├─cryptsetup.target
+●   ├─integritysetup.target
+●   ├─local-fs.target
+●   │ ├─-.mount
+○   │ ├─systemd-fsck-root.service
+●   │ └─systemd-remount-fs.service
+●   ├─swap.target
+●   │ └─dev-disk-by\x2duuid-53b0ace9\x2d77d8\x2d476d\x2da359\x2dc1cc4d0002e6.swap
+●   └─veritysetup.target
+```
+Юниты помеченные ○ - косвенно зависимые
+
+---
+
+#### 4. Определить, запущен ли сервис *cron*
+Команда `systemctl is-active cron`, Результат: `active`
+
+---
+
+#### 5. Вывести все параметры юнита *cron* (даже те, которые были назначены автоматически)
+Команда `systemctl show cron`
+
+---
+
+#### 6. Запретить автозагрузку *cron*, оставив возможность загружаться по зависимостям
+Команда `systemctl disable cron`
+
+---
