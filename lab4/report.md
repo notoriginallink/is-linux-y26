@@ -343,3 +343,62 @@ Archived and active journals take up 36.2M in the file system.
 или задать автоматическую очистку с помощью `--vacuum-time=[PERIOD]weeks`
 
 ---
+
+## Часть 5. Создание и настройка .mount юнита
+### 1. Подготовка файловой системы
+Предварительно подключим новый диск
+```
+fdisk /dev/sdb		# Создаем новый раздел
+mkfs.ext4 /dev/sdb1	# Форматируем раздел в ext4
+mkdir /mnt/mydata	# Создаем директорию для монтирования
+```
+
+---
+
+### 2. Создание .mount юнита
+Создаем файл в `/etc/systemd/system/mnt-mydata.mount` со следующим содержимым
+```
+[Unit]
+Description=is-linux-y26
+After=local-fs.target		# После того, как будут смонтированы стандартные файловые системы (+ те, что в fstab)
+
+[Mount]
+What=/dev/sdb1
+Where=/mnt/mydata
+Type=ext4
+Options=defaults		# Параметры аналогичные тем, что указываются в fstab (e.g. rw, exec, auto, etc.)
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
+
+### 3. Запуск и проверка .mount юнита
+```
+systemctl daemon-reload			# Перезагрузить все конфигурационные файлы юнитов
+systemctl enable mnt-mydata.mount	
+systemctl start mnt-mydata.mount
+```
+Теперь проверим статус с помощью `systemctl status mnt-mydata.mount`
+```
+● mnt-mydata.mount - is-linux-y26
+     Loaded: loaded (/etc/systemd/system/mnt-mydata.mount; enabled; preset: enabled)
+     Active: active (mounted) since Wed 2025-03-26 22:23:44 MSK; 28s ago
+      Where: /mnt/mydata
+       What: /dev/sdb1
+      Tasks: 0 (limit: 1107)
+     Memory: 28.0K
+        CPU: 3ms
+     CGroup: /system.slice/mnt-mydata.mount
+
+мар 26 22:23:44 d12 systemd[1]: Mounting mnt-mydata.mount - is-linux-y26...
+мар 26 22:23:44 d12 systemd[1]: Mounted mnt-mydata.mount - is-linux-y26.
+```
+Проверим, что раздел смонтирован с помощью `df /mnt/mydata`
+```
+Файловая система 1K-блоков Использовано Доступно Использовано% Cмонтировано в
+/dev/sdb1          1012140           24   943356            1% /mnt/mydata
+```
+
+---
