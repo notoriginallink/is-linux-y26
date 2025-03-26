@@ -402,3 +402,66 @@ systemctl start mnt-mydata.mount
 ```
 
 ---
+
+## Часть 6. Использование .automount для отложенного монтирования
+### 1. Подготовка .mount юнита
+Остановим монтирование с помощью `systemctl stop mnt-mydata.mount` и убедимся, что он раздел **/dev/sdb1** отмонтирован
+```
+○ mnt-mydata.mount - is-linux-y26
+     Loaded: loaded (/etc/systemd/system/mnt-mydata.mount; enabled; preset: enabled)
+     Active: inactive (dead) since Wed 2025-03-26 22:31:17 MSK; 27s ago
+   Duration: 7min 33.310s
+      Where: /mnt/mydata
+       What: /dev/sdb1
+        CPU: 8ms
+
+мар 26 22:23:44 d12 systemd[1]: Mounting mnt-mydata.mount - is-linux-y26...
+мар 26 22:23:44 d12 systemd[1]: Mounted mnt-mydata.mount - is-linux-y26.
+мар 26 22:31:17 d12 systemd[1]: Unmounting mnt-mydata.mount - is-linux-y26...
+мар 26 22:31:17 d12 systemd[1]: mnt-mydata.mount: Deactivated successfully.
+мар 26 22:31:17 d12 systemd[1]: Unmounted mnt-mydata.mount - is-linux-y26.
+```
+
+---
+
+### 2. Создание .automount юнита
+Создаем файл `/etc/systemd/system/mnt-mydata.automount` со следующим содержимым
+```
+[Unit]
+Description=is-linux-y26
+After=local-fs.target
+
+[Automount]
+Where=/mnt/mydata
+TimeoutIdleSec=60
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
+
+### 3. Запуск и проверка .automount юнита
+Отключим **.mount** юнит с помощью `systemctl disable mnt-mydata.mount`
+```
+systemctl daemon-reload
+systemctl enable mnt-mydata.automount
+systemctl start mnt-mydata.automount
+```
+Выведем статус юнита (`systemctl status mnt-mydata.automount`)
+```
+● mnt-mydata.automount - is-linux-y26
+     Loaded: loaded (/etc/systemd/system/mnt-mydata.automount; enabled; preset: enabled)
+     Active: active (waiting) since Wed 2025-03-26 22:38:16 MSK; 1min 22s ago
+   Triggers: ● mnt-mydata.mount
+      Where: /mnt/mydata
+
+мар 26 22:38:16 d12 systemd[1]: Set up automount mnt-mydata.automount - is-linux-y26.
+```
+И попробуем создать файл в директории */mnt/mydata*, в статусе появилась новая строчка логов
+```
+мар 26 22:40:46 d12 systemd[1]: mnt-mydata.automount: Got automount request for /mnt/mydata, triggered by 924 (ls)
+```
+А также раздел появился в выводе `df`
+
+После 60 секунд раздел размонтировывается
