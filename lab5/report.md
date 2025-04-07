@@ -17,7 +17,7 @@ echo "30000 100000" > /sys/fs/cgroup/user-04/cpu.max	# Разрешаем исп
 ### 2. Ограничение памяти для процесса
 Создадим группу **mem-test**
 ```
-mkdir /sys/fs/cgroup/l
+mkdir /sys/fs/cgroup/mem-test
 echo "566231040" | tee /sys/fs/cgroup/mem-test/memory.max	# (04*10 + 500) = 540МБ = 566_231_040Б
 ```
 Далее создадим программу, который будет забивать память
@@ -37,3 +37,15 @@ echo $! | tee /sys/fs/cgroup/mem-test/cgroup.procs
 
 ---
 
+### 3. Ограничение по IO
+Для этого пункта пришлось переключиться на cgroups_v1 так как ios.max не работало :(
+
+Создадим группу **io-test**
+```
+cgcreate -g blkio:/io-test
+echo "8:0 1040" | tee /sys/fs/cgroup/blkio/io-test/blkio.throttle.read_iops_device
+echo "8:0 540" | tee /sys/fs/cgroup/blkio/io-test/blkio.throttle.write_iops_device
+```
+- `8:0` - MAJOR:MINOR разделы устройства sda (можно узнать через lsblk)
+
+---
