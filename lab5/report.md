@@ -49,3 +49,25 @@ echo "8:0 540" | tee /sys/fs/cgroup/blkio/io-test/blkio.throttle.write_iops_devi
 - `8:0` - MAJOR:MINOR разделы устройства sda (можно узнать через lsblk)
 
 ---
+
+### 4. Закрепление к определенному ядру процессора
+Создадим группу **cpu-core-test**
+```
+cgcreate -g cpuset:/cpu-core-test
+```
+И закрепим все процессы этой группы на ядро 0
+```
+echo 0 | tee /sys/fs/cgroup/cpuset/cpu-core-test/cpuset.cpus
+echo 0 | tee /sys/fs/cgroup/cpuset/cpu-core-test/cpuset.mems	# Почему то по умолчанию не проставляется и без нее не работает
+```
+Теперь запустим утилиту top в созданной группе и проверим на каком ядре она запущена
+```
+cgexec -g cpuset:/cpu-core-test top &
+taskset -p 706
+```
+Вывод команды
+```
+pid 706's current affinity mask: 1	# 1 = 0 ядро (как ни странно)
+```
+
+---
