@@ -156,3 +156,28 @@ tmpfs              481M            0  481M            0% /tmp/private_root
 На основном хосте команда ничего не выводит
 
 ---
+
+### 9. Изоляция сети
+``` bash
+unshare --net bash
+```
+Новое пространство должно не иметь никаких сетевых интерфейсов, проверим с помощью `ip a`
+```
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+```
+Нет никаких интерфейсов, кроме LOOPBACK, поэтому команда `ping google.com` ожидаемо завершится неуспешно
+```
+ping: google.com: Временный сбой в разрешении имен
+```
+Хотя на основном хосте запрос проходит
+```
+PING google.com (64.233.164.113) 56(84) bytes of data.
+64 bytes from lf-in-f113.1e100.net (64.233.164.113): icmp_seq=1 ttl=107 time=8.78 ms
+
+--- google.com ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 8.778/8.778/8.778/0.000 ms
+```
+
+---
