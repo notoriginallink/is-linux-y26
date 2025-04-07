@@ -139,5 +139,20 @@ USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root           1  0.0  0.3   7296  3896 tty1     S    23:46   0:00 bash
 root           8  0.0  0.4  11084  4436 tty1     R+   23:47   0:00 ps aux
 ```
+После выхода из пространства нужно обратно смонтировать **proc** - `mount -t proc proc /proc`
+
+---
+
+### 8. Изоляция файловой системы
+``` bash
+unshare --mount bash				# Создание пространства
+mkdir /tmp/private_$(whoami)			# Создание директории
+mount -t tmpfs tmpfs /tmp/private_$(whoami)	# Монтирование новой временной директории
+```
+Проверим монтирование в новом пространстве с помощью `df -h | grep private_$(whoami)`
+```
+tmpfs              481M            0  481M            0% /tmp/private_root
+```
+На основном хосте команда ничего не выводит
 
 ---
