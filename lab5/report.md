@@ -181,3 +181,79 @@ rtt min/avg/max/mdev = 8.778/8.778/8.778/0.000 ms
 ```
 
 ---
+
+### 10. Создание OverlayFS
+#### a. Настройка
+Создадим директории для каждого из слоев а также поместим проверочный файл в каталог **lower**
+``` bash
+mkdir -p ~/overlay_/{lower,upper,work,merged}
+
+echo "Оригинальный текст из LOWER" >> ~/overlay_/lower/04_original.txt
+
+mount -t overlay overlay -o lowerdir=/root/overlay_/lower,upperdir=/root/overlay_/upper,workdir=/root/overlay_/work ~/overlay_/merged
+```
+
+#### b. Имитация неполодки и отладка
+Удалим текстовый файл из каталога merged - `rm -f /root/overlay_/merged/04_original.txt`
+
+Теперь проверим файлы в верхнем каталоге (`ls -l`) 
+```
+итого 0
+c--------- 2 root root 0, 0 апр  8 00:26 04_original.txt
+```
+Для того, чтобы восстановить файл `04_original.txt` удалим его в каталоге **upper**, тогда OverlayFS перестанет его скрывать и 
+он станет снова видим в **merged**
+
+#### c. Скрипт для аудита
+``` bash
+#!/bin/bash
+
+OVERLAY="/root/overlay_"
+UPPER_DIR="$OVERLAY/upper"
+LOWER_DIR="$OVERLAY/lower"
+MERGED_DIR="$OVERLAY/merged"
+
+OUTPUT="04_audit.log"
+
+rm -f "./$OUTPUT"
+touch $OUTPUT
+
+
+# Вывод всех Whiteout файлов в файл
+UPPER_COUNT=0
+for FILE in $(find $UPPER_DIR -type c); do
+	if [[ $UPPER_COUNT -eq 0 ]]; then
+		echo "======== Whiteout files ========" >> $OUTPUT 
+	fi
+	echo $FILE >> $OUTPUT
+	UPPER_COUNT=$(($UPPER_COUNT + 1))
+done
+
+if [[ $UPPER_COUNT -ne 0 ]]; then
+	echo >> $OUTPUT
+fi
+
+# Разница между Lower и Merged
+echo "======== Lower and Merged diff ========" >> $OUTPUT
+diff -y "$LOWER_DIR" "$MERGED_DIR" >> $OUTPUT
+
+exit 1
+```
+
+#### d. Ответы на вопросы
+- **Как OverlayFS скрывает файлы из нижнего слоя при удалении в объединенном?**
+
+При помощи Whiteout файлов, при удалении файла в merged (который изначально при монтировании был в lower), в upper создается файл специального типа
+который указывает файловой системе, что этот файл нужно скрыть из merged
+
+---
+- **Можно ли перемонтировать OvelayFS если удалить каталог work?**
+
+Нет, так как каталог work - обязательный для монтирования, там хранятся временные служебные файлы, необходимые для функционирования файловой системы
+
+---
+- **Что будет с каталогом Merged, если верхний каталог будет пуст?**
+
+Ничего, просто все файлы из нижнего каталога будут присутствовать в каталоге merged
+
+---

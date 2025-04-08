@@ -1,0 +1,5 @@
+======== Whiteout files ========
+/root/overlay_/upper/04_original.txt
+
+======== Lower and Merged diff ========
+Только в /root/overlay_/lower: 04_original.txt
