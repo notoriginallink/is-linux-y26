@@ -257,3 +257,29 @@ exit 1
 Ничего, просто все файлы из нижнего каталога будут присутствовать в каталоге merged
 
 ---
+
+### 11. Оптимизация Dockerfile
+Итоговый dockerfile
+``` dockerfile
+FROM python:3.13.2-slim					# Исопльзуется меньши образ (на 10-40% меньше)
+WORKDIR /app						# Создаем директорию /app и переходим в неё
+COPY requirements.txt					# Копируем и устанавливаем зависимости отдельно от приложения для кэширования
+RUN pip install --no-cache-dir -r requirements.txt	
+COPY . .
+RUN useradd -m appuser					# Создаем отдельного пользователя для образа
+USER appuser
+CMD ["python", "app.py"]
+```
+Файл `requirements.txt` - содержащий зависимости
+``` text
+flask==3.1.0
+```
+Файл `.dockerignore`
+``` 
+**/__pycache__/
+env/
+venv/
+.git/
+```
+
+---
