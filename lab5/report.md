@@ -283,3 +283,42 @@ venv/
 ```
 
 ---
+
+### 12. Установка WordPress через DockerCompose
+Итоговый `docker-compose.yaml`
+``` yaml
+version: '3.8'
+
+services:
+  db:
+    image: 'mysql:9.2.0'
+    restart: always				# 
+    environment:
+      MYSQL_ROOT_PASSWORD: danya_db_pass
+      MYSQL_PASSWORD: danya_db_pass
+      MYSQL_USER: danya
+      MYSQL_DATABASE: wordpress
+    volumes:
+      - wp_data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+
+  wordpress:
+    image: 'wordpress:6.7.2'
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: danya
+      WORDPRESS_DB_PASSWORD: danya_db_pass
+      WORDPRESS_DB_NAME: wordpress
+    ports:
+      - '2004:80' # Пробрасываем порт 80 контейнера на порт 2004 хоста
+    volumes:
+      - danya_wp_data:/var/www/html
+
+# Именованные тома для сохранения состояния при перезапуске контейнеров
+volumes:
+  wp_data:
+  danya_wp_data:
+```
+
